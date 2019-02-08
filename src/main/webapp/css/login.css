@@ -1,0 +1,29 @@
+@charset "ISO-8859-1";
+
+#password_header{
+	left: 180px;
+	padding: 53px;
+}
+
+
+.content{
+	margin: 0;
+    background:activeborder;
+    position: absolute;
+    top: 45%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+}
+
+#company_header{
+	position: absolute;
+	margin: 0;
+    position: absolute;
+    top: 10%;
+    left: 50%;
+    margin-right: -50%;
+    transform: translate(-50%, -50%)
+	
+}
+

@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Manager Page</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+	integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+	crossorigin="anonymous">
+
+<style>
+#table {
+	width: 70%;
+	font: 17px Calibri;
+	background-color: chucknorris;
+}
+
+table, th, td {
+	border: solid 1px #DDD;
+	border-collapse: collapse;
+	padding: 2px 3px;
+	text-align: center;
+}
+</style>
+</head>
+<body onload="createTable()">
+
+	<!--THE CONTAINER WHERE WE'll ADD THE DYNAMIC TABLE-->
+	<div id="cont"></div>
+	<h1 id="mngHome">Employee Home Page</h1>
+		<nav class="navbar navbar-dark bg-dark">
+			<p>
+				<input type="button" id="reqData" value="View Information" onclick="requestData()">
+			</p>
+			<p>
+				<input type="button" id="reqRmb" value="View Reimbursements" onclick="requestRmb()">
+			</p>
+			
+		</nav>
+		
+
+	
+		<div>
+			<form>
+				<table class="table table-bordered table-striped">
+			<tbody id="empTable">
+<!-- 				<th>Employee ID</th> -->
+<!-- 				<th>Name</th> -->
+<!-- 				<th>Username</th> -->
+<!-- 				<th>Email</th> -->
+<!-- 				<th>Title</th>	 -->
+			</tbody>
+		</table>
+			</form>
+		</div>
+		<div>
+		<h3>Submit Reimbursement</h3>
+	</div>
+	<div class="well">
+		<form id = "myForm" class="form-group" onsubmit="return false">
+			<input placeholder="Id" type = "text" id="subId">
+			<input placeholder="Name" type = "text" id="subName">
+			<input placeholder="Amount" type = "text" id="subAmt">
+			<input type= "submit" value ="Submit" id = "subButton"	
+				class = "btn btn-primary" onClick="subRmb()">
+			 
+		</form>
+	</div>
+		<h3>Update User Data</h3>
+	<div class="well">
+		<form id = "myForm" class="form-group" onsubmit="return false">
+			<input placeholder="Current ID" type = "text" id="newId">	
+			<input placeholder="Name" type = "text" id="newName">
+			<input placeholder="Username" type = "text" id="newUname">
+			<input placeholder="Email" type = "text" id="newEmail">
+			<input type= "submit" value ="Submit" id = "subButton"	
+				class = "btn btn-primary" onClick="update()">
+			
+		</form>
+	</div>
+
+<script>
+	// ARRAY FOR HEADER.
+	
+
+	// FIRST CREATE A TABLE STRUCTURE BY ADDING A FEW HEADERS AND
+	// ADD THE TABLE TO YOUR WEB PAGE.
+	function createTable() {
+		 empTable = document.createElement('table');
+		empTable.setAttribute('id', 'empTable'); // SET THE TABLE ID.
+		empTbl = document.createElement('tbody');
+		empTable.appendChild(empTbl);
+	}
+
+	
+		function requestData() {
+			document.getElementById('cont').innerHTML="";
+		  var xhttp = new XMLHttpRequest();
+		  xhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {		    	
+		    
+		    var randomName = JSON.parse(this.responseText);
+		   
+		      var table = document.getElementById("empTable");
+		      	var row = document.getElementById('cont');
+		      	
+		      	
+			      	var row = document.createElement("tr");
+					var idcol = document.createElement("td");
+					var namecol = document.createElement("td");
+					var usrNamecol = document.createElement("td");
+					var emailcol = document.createElement("td");
+					var titlecol = document.createElement("td");
+	
+					idcol.textContent = randomName.id;
+					namecol.textContent = randomName.name;
+					usrNamecol.textContent = randomName.userName;
+					emailcol.textContent = randomName.email;
+					titlecol.textContent = randomName.title;
+		
+					row.appendChild(idcol);
+					row.appendChild(namecol);
+					row.appendChild(usrNamecol);
+					row.appendChild(emailcol);
+					row.appendChild(titlecol);
+	
+					document.getElementById("empTable").appendChild(row);
+
+		    }
+		    
+		  };
+		  xhttp.open("GET", "/ERproj1/GetSingleUser", true);
+		  xhttp.send();
+		}
+		
+		function requestRmb() {
+			document.getElementById('cont').innerHTML="";
+			  var xhttp = new XMLHttpRequest();
+			  xhttp.onreadystatechange = function() {
+			    if (this.readyState == 4 && this.status == 200) {
+			    				    	
+			     var randomRmb = JSON.parse(this.responseText);
+			      var table = document.getElementById("empTable");
+			      	var row = document.getElementById('cont');
+			      	
+			      	
+			      	for(i=0; i<randomRmb.length; i++){
+			      		var tblH = document.createElement("th")
+				      	var row = document.createElement("tr");
+						var idcol = document.createElement("td");
+						var namecol = document.createElement("td");
+						var rmbNumcol = document.createElement("td");
+						var rmbStscol = document.createElement("td");
+						var rmbAmtcol = document.createElement("td");
+						var mngBycol = document.createElement("td");
+						
+						
+						idcol.textContent = randomRmb[i].id;
+						namecol.textContent = randomRmb[i].name;
+						rmbNumcol.textContent = randomRmb[i].reimbursementNumber;
+						rmbStscol.textContent = randomRmb[i].reimbursementStatus;
+						rmbAmtcol.textContent = randomRmb[i].reimbursementAmount;
+						mngBycol.textContent = randomRmb[i].managedBy;
+
+						row.appendChild(idcol);
+						row.appendChild(namecol);
+						row.appendChild(rmbNumcol);
+						row.appendChild(rmbStscol);
+						row.appendChild(rmbAmtcol);
+						row.appendChild(mngBycol);
+		
+						document.getElementById("empTable").appendChild(row);
+			      	}	
+			    }
+			    
+			  };
+			  xhttp.open("Get", "/ERproj1/GetReimbursementServlet", true);
+			  xhttp.send();
+			
+		}
+		
+		function subRmb() {
+			document.getElementById('cont').innerHTML="";
+				console.log("in subRmb")
+			  var xhttp = new XMLHttpRequest();
+			  xhttp.onreadystatechange = function() {
+			    if (this.readyState == 4 && this.status == 200) {
+		
+			    }
+			    
+			  };
+	  
+			  	 var sId = document.getElementById("subId").value;
+			     var sName = document.getElementById("subName").value;
+			     var sAmt = document.getElementById("subAmt").value;
+			     
+			     
+			     var submission = {id:sId, name:sName, reimbursementAmount:sAmt};
+			     var subJson = JSON.stringify(submission);
+			  console.log(subJson);
+			  xhttp.open("POST", "/ERproj1/SubmitReimbursementServlet", true);//change to single view servlet
+			  xhttp.send(subJson);
+			}
+		
+		function update() {
+			document.getElementById('cont').innerHTML="";
+			console.log("in update")
+		  var xhttp = new XMLHttpRequest();
+		  xhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {
+	
+		    }
+		    
+		  };
+  			 var nId = document.getElementById("newId").value;
+		  	 var nName = document.getElementById("newName").value;
+		     var nUname = document.getElementById("newUname").value;
+		     var nEmail = document.getElementById("newEmail").value;
+		     
+		     var submit = {id:nId, name:nName, userName:nUname, email:nEmail};
+		     var subJ = JSON.stringify(submit);
+		  console.log(subJ);
+		  xhttp.open("POST", "/ERproj1/UserUpdateServlet", true);
+		  xhttp.send(subJ);
+		}
+	</script>
+<div>
+	<form method="post" action="logout" id="logOutForm">
+		<button class="btn btn-danger" id="logOutBtn">Logout</button>
+	</form>
+</div>
+	
+
+</body>
+</html>

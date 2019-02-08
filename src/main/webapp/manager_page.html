@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="ISO-8859-1">
+<title>Manager Page</title>
+<link rel="stylesheet"
+	href="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/css/bootstrap.min.css"
+	integrity="sha384-GJzZqFGwb1QTTN6wy59ffF1BuGJpLSa9DkKMp0DgiMDm4iYMj70gZWKYbI706tWS"
+	crossorigin="anonymous">
+
+<style>
+table {
+	width: 70%;
+	font: 17px Calibri;
+}
+
+table, th, td {
+	border: solid 1px #DDD;
+	border-collapse: collapse;
+	padding: 2px 3px;
+	text-align: center;
+}
+</style>
+</head>
+<body onload="createTable()">
+
+	<!--THE CONTAINER WHERE WE'll ADD THE DYNAMIC TABLE-->
+	<div id="cont"></div>
+	<h1 id="mngHome" >Manager Home Page</h1>
+		<nav class="navbar navbar-dark bg-dark">
+			<p>
+				<input type="button" id="reqData" value="Get All Employees" onclick="requestData()">
+			</p>
+			<p>
+				<input type="button" id="reqRmb" value="Get All Reimbursements" onclick="requestRmb()">
+			</p>
+			<p>
+				<input type="text" id ="rmbText"><!-- need to json parse an ID for this -->
+				<input type="button" id="view1Rmb" value="Get Users Reimbursements" onclick="view1Rmb()">
+			</p>
+			<p>
+				<input type="button" id="veiwPndRmbs" value="View Pending Reimbursements" onclick="allPendingRmb()">	
+			</p>
+<!-- 			<p> -->
+<!-- 				<input placeholder="Enter Employee ID" type = "text" id="getOneRmbr"> -->
+<!-- 				<input type="submit" value ="See Reinbursements" id = "getOneBtn" onClick="getOneRmb()"> -->
+<!-- 			</p> -->
+		</nav>
+				<h3>Create New User</h3>
+			<div class="well">
+				<form id = "myForm" class="form-group" onsubmit="return false">
+					<input placeholder="Name" type = "text" id="name">	
+					<input placeholder="Username" type = "text" id="uName">
+					<input placeholder="Password" type = "password" id="pass">
+					<input placeholder="Email" type = "text" id="email">
+					<input placeholder="Title" type = "text" id="title">
+					<input type= "submit" value ="Submit" id = "subButton"	
+						class = "btn btn-primary" onClick="create()">
+		</form>
+			</div>
+			
+		<div>
+			<form>
+				<table class="table table-bordered table-striped">
+			<tbody id="empTable">
+			</tbody>
+		</table>
+			</form>
+		</div>
+	
+
+<script>
+	// ARRAY FOR HEADER.
+	
+
+	// FIRST CREATE A TABLE STRUCTURE BY ADDING A FEW HEADERS AND
+	// ADD THE TABLE TO YOUR WEB PAGE.
+	function createTable() {
+		 empTable = document.createElement('table');
+		empTable.setAttribute('id', 'empTable'); // SET THE TABLE ID.
+		empTbl = document.createElement('tbody');
+		empTable.appendChild(empTbl);
+	}
+
+	
+		function requestData() {
+
+		  var xhttp = new XMLHttpRequest();
+		  xhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {
+		    	
+		    
+		    var randomName = JSON.parse(this.responseText);
+		   
+		      console.log(randomName);
+		      var table = document.getElementById("empTable");
+		      	var row = document.getElementById("cont");
+		      	for(var i=0; i<randomName.length; i++){
+		      	
+			      	var row = document.createElement("tr");
+					var idcol = document.createElement("td");
+					var namecol = document.createElement("td");
+					var usrNamecol = document.createElement("td");
+					var emailcol = document.createElement("td");
+					var titlecol = document.createElement("td");
+	
+					idcol.textContent = randomName[i].id;
+					namecol.textContent = randomName[i].name;
+					usrNamecol.textContent = randomName[i].userName;
+					emailcol.textContent = randomName[i].email;
+					titlecol.textContent = randomName[i].title;
+		
+					row.appendChild(idcol);
+					row.appendChild(namecol);
+					row.appendChild(usrNamecol);
+					row.appendChild(emailcol);
+					row.appendChild(titlecol);
+					document.getElementById("cont").innerHTML='';
+					document.getElementById("empTable").appendChild(row);
+
+		      	}
+		      	
+		    }
+		    
+		  };
+		  xhttp.open("GET", "/ERproj1/getInfoFromDbServlet", true);
+		  xhttp.send();
+		}
+		
+		function requestRmb() {
+			  var xhttp = new XMLHttpRequest();
+			  xhttp.onreadystatechange = function() {
+			    if (this.readyState == 4 && this.status == 200) {
+			    	
+			    	
+			     var randomRmb = JSON.parse(this.responseText);
+			   		console.log(randomRmb);
+			      var table = document.getElementById("empTable");
+			      	var row = document.getElementById('cont');
+			      	for(var i=0; i<randomRmb.length; i++){
+			      	
+				      	var row = document.createElement("tr");
+						var idcol = document.createElement("td");
+						var namecol = document.createElement("td");
+						var rmbNumcol = document.createElement("td");
+						var rmbStscol = document.createElement("td");
+						var rmbAmtcol = document.createElement("td");
+						var mngBycol = document.createElement("td");
+		
+						idcol.textContent = randomRmb[i].id;
+						namecol.textContent = randomRmb[i].name;
+						rmbNumcol.textContent = randomRmb[i].reimbursementNumber;
+						rmbStscol.textContent = randomRmb[i].reimbursementStatus;
+						rmbAmtcol.textContent = randomRmb[i].reimbursementAmount;
+						mngBycol.textContent = randomRmb[i].managedBy;
+
+						row.appendChild(idcol);
+						row.appendChild(namecol);
+						row.appendChild(rmbNumcol);
+						row.appendChild(rmbStscol);
+						row.appendChild(rmbAmtcol);
+						row.appendChild(mngBycol);
+						document.getElementById("empTable").appendChild(row);
+
+			      	}
+			      	
+			    }
+			    
+			  };
+			  xhttp.open("GET", "/ERproj1/GetRmbFromDbServlet", true);
+			  xhttp.send();
+			}
+		
+		
+		function view1Rmb() {
+
+			var i = document.getElementById("rmbText").value;
+			  var xhttp = new XMLHttpRequest();
+			  xhttp.onreadystatechange = function() {
+			    if (this.readyState == 4 && this.status == 200) {
+			     var randomRmb = JSON.parse(this.responseText);
+			   		console.log(randomRmb);
+			      var table = document.getElementById("empTable");
+			      	var row = document.getElementById('cont');
+			      	
+				      	var row = document.createElement("tr");
+						var idcol = document.createElement("td");
+						var namecol = document.createElement("td");
+						var rmbNumcol = document.createElement("td");
+						var rmbStscol = document.createElement("td");
+						var rmbAmtcol = document.createElement("td");
+						var mngBycol = document.createElement("td");
+		
+						idcol.textContent = randomRmb[i].id;
+						namecol.textContent = randomRmb[i].name;
+						rmbNumcol.textContent = randomRmb[i].reimbursementNumber;
+						rmbStscol.textContent = randomRmb[i].reimbursementStatus;
+						rmbAmtcol.textContent = randomRmb[i].reimbursementAmount;
+						mngBycol.textContent = randomRmb[i].managedBy;
+
+						row.appendChild(idcol);
+						row.appendChild(namecol);
+						row.appendChild(rmbNumcol);
+						row.appendChild(rmbStscol);
+						row.appendChild(rmbAmtcol);
+						row.appendChild(mngBycol);
+						document.getElementById('cont').innerHTML='';
+						document.getElementById("empTable").appendChild(row);
+			      	}
+			    
+			    
+			  };
+// 			  xhttp.open("GET", "/ERproj1/GetRmbFromDbServlet", true);
+// 			  xhttp.send();
+			  nId = document.getElementById("rmbText")
+			  var submit = {id:nId};
+			     var subJ = JSON.stringify(submit);
+			  	console.log(subJ);
+			  	xhttp.open("POST", "/ERproj1/GetReimbursementServlet", true);
+			  	xhttp.send(subJ);
+			}
+		
+		function allPendingRmb() {
+			  var xhttp = new XMLHttpRequest();
+			  xhttp.onreadystatechange = function() {
+			    if (this.readyState == 4 && this.status == 200) {
+			    	
+			    	
+			     var randomRmb = JSON.parse(this.responseText);
+			   		console.log(randomRmb);
+			      var table = document.getElementById("empTable");
+			      	var row = document.getElementById('cont');
+			      	for(var i=0; i<randomRmb.length; i++){
+			      	
+				      	var row = document.createElement("tr");
+						var idcol = document.createElement("td");
+						var namecol = document.createElement("td");
+						var rmbNumcol = document.createElement("td");
+						var rmbStscol = document.createElement("td");
+						var rmbAmtcol = document.createElement("td");
+						var mngBycol = document.createElement("td");
+						
+						idcol.textContent = randomRmb[i].id;
+						namecol.textContent = randomRmb[i].name;
+						rmbNumcol.textContent = randomRmb[i].reimbursementNumber;
+						rmbStscol.textContent = randomRmb[i].reimbursementStatus;
+						rmbAmtcol.textContent = randomRmb[i].reimbursementAmount;
+						mngBycol.textContent = randomRmb[i].managedBy;
+
+						
+						row.appendChild(idcol);
+						row.appendChild(namecol);
+						row.appendChild(rmbNumcol);
+						row.appendChild(rmbStscol);
+						row.appendChild(rmbAmtcol);
+						row.appendChild(mngBycol);
+						document.getElementById('cont').innerHTML='';
+						document.getElementById("empTable").appendChild(row);
+
+			      	}
+			      	
+			    }
+			    
+			  };
+			  xhttp.open("GET", "/ERproj1/GetPendingReimbursements", true);
+			  xhttp.send();
+			}
+		
+		
+		function getOneRmb() {
+			
+		  var xhttp = new XMLHttpRequest();
+		  xhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {
+				
+		    	var randoRmb = JSON.parse(this.responseText);//broken
+		    	
+		    	var table = document.getElementById("empTable");
+		      	var row = document.getElementById('cont');
+		      	
+		      	for(i=0; i<randoRmb.length; i++){
+		      		var tblH = document.createElement("th")	      		
+			      	var rows = document.createElement("tr");
+					var idcols = document.createElement("td");
+					var namecols = document.createElement("td");
+					var rmbNumcols = document.createElement("td");
+					var rmbStscols = document.createElement("td");
+					var rmbAmtcols = document.createElement("td");
+					var mngBycols = document.createElement("td");
+					
+					idcols.textContent = randoRmb[i].id;
+					namecols.textContent = randoRmb[i].name;
+					rmbNumcols.textContent = randoRmb[i].reimbursementNumber;
+					rmbStscols.textContent = randoRmb[i].reimbursementStatus;
+					rmbAmtcols.textContent = randoRmb[i].reimbursementAmount;
+					mngBycols.textContent = randoRmb[i].managedBy;
+
+					row.appendChild(idcols);
+					row.appendChild(namecols);
+					row.appendChild(rmbNumcols);
+					row.appendChild(rmbStscols);
+					row.appendChild(rmbAmtcols);
+					row.appendChild(mngBycols);
+					document.getElementById('cont').innerHTML='';
+					document.getElementById("empTable").appendChild(row);
+		      	}
+		    }
+		    
+		  };
+  			 
+		  var getRmb = document.getElementById("getOneRmbr").value;
+		  console.log(getRmb);
+		     var submt = {id:getRmb};
+		     var subJn = JSON.stringify(submt);
+		  console.log(subJn);
+		  xhttp.open("POST", "/ERproj1/GetOneReimbursement", true);
+		  xhttp.send(subJn);
+		  
+		}
+		  
+		function create() {
+			console.log("in create")
+		  var xhttp = new XMLHttpRequest();
+		  xhttp.onreadystatechange = function() {
+		    if (this.readyState == 4 && this.status == 200) {
+		    	document.getElementById('cont').innerHTML='';
+		    }
+		    
+		  };
+  			 var newName = document.getElementById("name").value;
+		  	 var newUname = document.getElementById("uName").value;
+		     var newPass = document.getElementById("pass").value;
+		     var newEmail = document.getElementById("email").value;
+		     var newTitle = document.getElementById("title").value;
+		     var submit = {name:newName, userName:newUname, password:newPass, email:newEmail, title:newTitle};
+		     var subJ = JSON.stringify(submit);
+		  console.log(subJ);
+		  xhttp.open("POST", "/ERproj1/CreateEmployee", true);
+		  xhttp.send(subJ);
+		}
+		
+		
+	</script>
+<div>
+	<form method="post" action="logout" id="logOutForm">
+		<button class="btn btn-danger" id="logOutBtn">Logout</button>
+	</form>
+</div>
+	
+
+</body>
+</html>
